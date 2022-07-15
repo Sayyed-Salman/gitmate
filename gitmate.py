@@ -34,14 +34,17 @@ def set_data(key, value):
         json.dump(user_data, file, indent=4)
         file.truncate()
 
+# TODO : check if user is using --set-auth flag and save it in user_data.json file
+
 
 USER_DATA = None
+
 with open("user_data.json", "r") as file:
     USER_DATA = json.load(file)
 
 if USER_DATA['auth_token'] == "":
     print("* Git Mate *")
-    print("set your personal access token first")
+    print("set your personal-access-token")
     print("gitmate --set-auth-token \"your_personal_access_token\"")
     exit
 
