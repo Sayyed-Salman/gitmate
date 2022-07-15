@@ -1,0 +1,245 @@
+GitMate
+Creating a repository in github and local storage with cli.
+
+
+requirements =
+[
+    - personal_access_token,
+    - git,
+    - python3,
+]
+
+Process :
+    1) Creating a local repository in local machine
+    2) Initalizing git repo 
+    3) Adding a README.md file with [PROJECT_NAME] & [PROJECT_DESCRIPTION]
+    4) Staging and Commiting changes to git.
+    5) Using GitHub's REST api to create a remote repository in users account.
+    6) getting https://www.github.com/user/[PROJECT_NAME].git for setting origin.
+    7) Generic github commands in local repository, ie adding remote and pushing 
+    [
+        git remote add origin https://www.github.com/user/[PROJECT_NAME].git
+        git branch -M main
+        git push -u origin main
+    ]
+
+
+Development Process :
+    Step 1 :
+       " 1) Creating a local repository in local machine "
+
+        TASK 1 :
+            " Taking User Input for PROJECT_NAME and PROJECT_DESCRIPTION "
+
+            - Using argparse module, Taking input directly from command line using flags.
+
+            CODE {
+                parser.add_argument("--name", help="Repository name")
+                parser.add_argument("-d", "--description",
+                    help="Description about the repository")
+            }
+
+            (special error doging functionality for project name, using namegenerator module if
+            user dosen't enter project name it will automatically generate a name)
+
+        TASK 2 :
+            " Taking input for PATH and creating local repository. "
+
+            CODE {
+            parser.add_argument("-p", "--path", help="Local path")
+
+            def create_local_repo(name, path):
+                if not os.path.isdir(path):
+                    project_name = os.path.join(path, name)
+                    os.mkdir(project_name)
+
+            }
+
+            - if users adds no path project PATH will be current repository
+            - repo name will be PROJECT_NAME
+
+
+    Step 2 :
+        TASK 1:
+            "Initalizing git repository"
+
+            - using os.system() to execute commands 
+
+            CODE {
+                def git_init(path):
+                    """
+                    Initializes github repository, returns system response.
+                    """
+                    if os.path.isdir(path):
+                        os.chdir(path)
+                        system_response = os.system("git init")
+                    return system_response
+            }
+    
+    Step 3 :
+        TASK 1 :
+            " Adding a README.md file with [PROJECT_NAME] & [PROJECT_DESCRIPTION] "
+
+            - using python's inbuilt file handling tools
+
+            CODE {
+                def add_readme(path, title, description):
+                    """
+                        Create a README.md file in project dir root.
+                    """
+                    if os.path.isdir(path):
+                        os.chdir(path)
+                        file_content = f""" # {title}
+                        {description}
+                        """
+                        file_path = os.path.join(path, "README.md")
+                        with open("README.md", 'w+') as file:
+                            file.write(file_content)
+
+                    if os.path.isfile(file_path):
+                        return 0
+            }
+    
+    Step 4 :
+        TASK 1 :
+            " Staging and Commiting changes to git. "
+
+            - using os.system() to execute git commands in terminal/cmd 
+
+            CODE {
+                def stage_git(path, commands: list):
+                    """
+                    Stating changes to git and then commiting
+                    """
+                    if os.path.isdir(path):
+                        os.chdir(path)
+                        sys_response = []
+                        for cmd in commands:
+                            try:
+                                response = os.system(cmd)
+                                sys_response.append(response)
+                            except Exception as e:
+                                return (e, sys_response)
+                        return 0
+            }
+    
+    Step 5 :
+        TASK 1 :
+            " Getting All requirements satisfyied "
+
+            - auth token
+            - url for repos 
+            - PROJECT_NAME & PROJECT_DESCRIPTION
+            - data header for request containing project name and project description 
+        
+        TASK 2 :
+            " Creting a rest client "
+
+            - using requests module to post REST request to github 
+            - using all requirements from "Step 5 : TASK 1"
+
+            CODE {
+                class RestClient:
+                    """
+                    REST client for github request 
+                    """
+
+                    def __init__(self, auth_token, data, url) -> None:
+                        self.auth_token = auth_token
+                        self.data = data
+                        self.url = url
+                        self.head = {"Authorization": f"token {self.auth_token}"}
+                        self.response = None
+
+                    def create_post_request(self) -> requests.Response:
+                        """
+                        Calls GitHub Api and create a response object.
+                        """
+                        self.response = requests.post(
+                            url=self.url, headers=self.head, json=self.data)
+                        return self.response
+
+                    def pretty_response(self):
+                        """
+                        Decorating Response for output
+                        """
+                        data = self.response.json()
+                        name = data["name"]
+                        url_path = data["full_name"]
+                        url = "https://www.github.com/"+url_path
+                        self.git_url = url + ".git"
+                        print(
+                            f"STATUS => {self.response}\nREPOSITORY NAME => {name}\nGITHUB URL => {url}")
+                        return self.git_url
+
+            }
+
+
+
+    Step 6 :
+        TASK 1 :
+            " Getting https://www.github.com/user/[PROJECT_NAME].git for setting origin. "
+
+            - using this link we'll link our local git repo to our remote repo
+            - we will extracting repo path from our response json data 
+            - this method is in the same class from above RestClient()
+
+            CODE {
+                     def pretty_response(self):
+                        """
+                        Decorating Response for output
+                        """
+                        data = self.response.json()
+                        name = data["name"]
+                        url_path = data["full_name"]
+                        url = "https://www.github.com/"+url_path
+                        self.git_url = url + ".git"
+                        print(
+                            f"STATUS => {self.response}\nREPOSITORY NAME => {name}\nGITHUB URL => {url}")
+                        return self.git_url
+            }  
+
+    Step 7 :
+        TASK 1 :
+            " Linking remote to local "
+
+            - github remote link to local repo 
+
+            ```
+            git remote add origin "https://www.github.com/usr/PROJECT_NAME.git"
+
+            ```
+
+            CODE {
+                def adding_remote_repository(path, remote_link):
+                    if os.path.isdir(path):
+                        os.chdir(path)
+                        sys_log = []
+                        try:
+                            add_remote = os.system(f"git remote add origin {remote_link}")
+                            branch = os.system("git branch -M main")
+                            sys_log.append(add_remote)
+                            sys_log.append(branch)
+                        except Exception as e:
+                            return (e, sys_log)
+                        
+                        return 0
+            }
+
+        
+        TASK 2 :
+            " Pushing Code to github "
+
+            - final task is pushing the repository to github
+
+            CODE {
+                def git_push(path):
+                    if os.path.isdir(path):
+                        os.chdir(path)
+                        sys_log = []
+                        try:
+                            push = os.system("git push -u origin main")
+                            sys_log.append(push)
+                        except Exception as e:
+                            return (e, sys_log)
+            }
