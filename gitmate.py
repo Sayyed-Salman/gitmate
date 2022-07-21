@@ -3,23 +3,6 @@ import argparse
 import json
 import namegenerator
 
-parser = argparse.ArgumentParser()
-
-# general arguments
-parser.add_argument("--name", help="Repository name")
-parser.add_argument("-d", "--description",
-                    help="Description about the repository")
-parser.add_argument("-p", "--path", help="Local path")
-
-
-# User Data arguments
-parser.add_argument("--set-username", help="sets github username")
-parser.add_argument("--set-auth-token",
-                    help="set your github personal access token")
-
-
-args = parser.parse_args()
-
 
 def check_value(argument):
     if argument:
@@ -34,25 +17,19 @@ def set_data(key, value):
         json.dump(user_data, file, indent=4)
         file.truncate()
 
+
 # TODO : check if user is using --set-auth flag and save it in user_data.json file
+# user_data.json format
+"""
+{
+  "username":"salman-sayyed",
+  "auth_token":"",
+  "projectsFolder":""
+}
+"""
+# Run in __name__
 
-
-USER_DATA = None
-
-with open("user_data.json", "r") as file:
-    USER_DATA = json.load(file)
-
-if USER_DATA['auth_token'] == "":
-    print("* Git Mate *")
-    print("set your personal-access-token")
-    print("gitmate --set-auth-token \"your_personal_access_token\"")
-    exit
-
-
-PROJECT_NAME = args.name if check_value(args.name) else namegenerator.gen()
-PROJECT_DESCRIPTION = args.description if check_value(
-    args.description) else "This is a new repository"
-PATH = args.path if check_value(args.path) else "./"
+# run in __name__
 
 
 def create_local_repo(name, path):
@@ -152,3 +129,42 @@ def git_push(path):
             sys_log.append(push)
         except Exception as e:
             return (e, sys_log)
+
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+
+    # general arguments
+    parser.add_argument("--name", help="Repository name")
+    parser.add_argument("-d", "--description",
+                        help="Description about the repository")
+    parser.add_argument("-p", "--path", help="Local path")
+    # User Data arguments
+    parser.add_argument("--set-username", help="sets github username")
+    parser.add_argument("--set-auth-token",
+                        help="set your github personal access token")
+    args = parser.parse_args()
+
+    PROJECT_NAME = args.name if check_value(args.name) else namegenerator.gen()
+    PROJECT_DESCRIPTION = args.description if check_value(
+        args.description) else "This is a new repository"
+    PATH = args.path if check_value(args.path) else "./"
+    USER_DATA = None
+
+    if args.set_auth_token:
+        token = args.set_auth_token
+        set_data("auth_token", token)
+        # with open("./user_data.json","+r") as file :
+        #     user_data = json.load()
+        #     user_data["auth_token"] = token
+
+    else:
+        with open("user_data.json", "r") as file:
+            USER_DATA = json.load(file)
+
+        if USER_DATA['auth_token'] == "":
+            print("* Git Mate *")
+            print("set your personal-access-token")
+            print("gitmate --set-auth-token \"your_personal_access_token\"")
+            exit
