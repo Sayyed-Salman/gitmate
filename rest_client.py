@@ -37,6 +37,15 @@ class RestClient:
             url=self.url, headers=self.head, json=self.data)
         return self.response
 
+    def error_check(self):
+        """
+        Checking if same repository already exists or any other error
+        """
+        if "errors" in self.response:
+            error_message = self.response["errors"][0]["message"]
+            return error_message
+        return 0
+
     def pretty_response(self):
         """
         Decorating Response for output

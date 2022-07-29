@@ -243,3 +243,15 @@ Development Process :
                         except Exception as e:
                             return (e, sys_log)
             }
+
+
+How To Use:
+
+    1) Set Personal Access Token 
+    
+    ```
+        gitmate --set-auth-token "your_auth_token"
+    
+    ```
+    - without PAT any of this won't work
+    - get your token from github, or google if you don't know how to get "Personal Access Token"
