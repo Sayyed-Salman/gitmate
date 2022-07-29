@@ -1,0 +1,10 @@
+Tests For GitMate 
+
+file name : gitmate.py
+test_file : test_gitmate.py
+
+Testing all methods of gitmate in test_gitmate :
+
+    1) Creating local repository
+
+    expected behaviour : creates a local repository in defined path 

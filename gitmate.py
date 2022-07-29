@@ -19,16 +19,6 @@ def set_data(key, value):
         file.truncate()
 
 
-# user_data.json format
-"""
-{
-  "username":"salman-sayyed",
-  "auth_token":"",
-  "projectsFolder":""
-}
-"""
-
-
 def create_local_repo(name, path):
     """
     Creates local repository and returns project path
@@ -160,7 +150,7 @@ if __name__ == "__main__":
         set_data("auth_token", token)
         exit
 
-    elif args.set_projects_folder:
+    elif check_value(args.set_projects_folder):
         folder_loc = args.set_projects_folder
         set_folder = False
         while not set_folder:
