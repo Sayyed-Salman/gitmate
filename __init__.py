@@ -1,0 +1,3 @@
+"""
+Main Module for GitMate
+"""

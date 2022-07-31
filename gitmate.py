@@ -57,15 +57,6 @@ def add_readme(path, title, description):
         return 0
 
 
-# testing add_readme() func
-"""
-result = add_readme('A:\\Test\\monkey', "Monkey-Code",
-                    "Writing Monkey Code to analyze how monkey brain works")
-print(result)
-test passed 
-"""
-
-
 def stage_git(path, commands: list):
     """
     Stating changes to git and then commiting
@@ -81,15 +72,6 @@ def stage_git(path, commands: list):
             except Exception as e:
                 return (e, sys_response)
         return 0
-
-
-# testing stage_git()
-"""
-result = stage_git('A:\\Test\\monkey', [
-                   "git add .", "git commit -m \"first commit\""])
-print(result)
-test passed
-"""
 
 
 def adding_remote_repository(path, remote_link):
@@ -186,16 +168,20 @@ if __name__ == "__main__":
     create_local_repo(PROJECT_NAME, PATH)
     git_init(PATH)
     add_readme(PATH, PROJECT_NAME, PROJECT_DESCRIPTION)
+
     git_commands = ["git add .", "git commit -m \"Initial commit 🗳️\""]
     stage_git(PATH, git_commands)
+
     data = {"name": f"{PROJECT_NAME}", "description": f"{PROJECT_DESCRIPTION}"}
     github = RestClient(AUTH_TOKEN, data, URL)
     github.create_post_request()
     error_check = github.error_check()
+
     if error_check != 0:
         print("[*] Error Occoured while creating remote repository")
         print(error_check)
         exit
+
     REMOTE_URL = github.pretty_response()
     adding_remote_repository(PATH, REMOTE_URL)
     git_push(PATH)
