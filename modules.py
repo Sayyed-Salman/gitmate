@@ -7,25 +7,26 @@ class GitMate:
     Creating and Linking Git Repository
     """
 
-    def __init__(self, path):
+    def __init__(self, path, name):
         self.path = path
+        self.name = name
+        self.project_path = os.path.join(self.path, self.name)
 
-    def create_local_repo(self, name):
+    def create_local_repo(self):
         """
         Creates local repository and returns project path
         """
         if os.path.isdir(self.path):
-            project_path = os.path.join(self.path, name)
+            # project_path = os.path.join(self.path, name)
             os.chdir(self.path)
-            os.mkdir(project_path)
-        return project_path
+            os.mkdir(self.project_path)
 
     def git_init(self):
         """
         Initializes github repository, returns system response.
         """
-        if os.path.isdir(self.path):
-            os.chdir(self.path)
+        if os.path.isdir(self.project_path):
+            os.chdir(self.project_path)
             system_response = os.system("git init")
         return system_response
 
@@ -33,12 +34,12 @@ class GitMate:
         """
             Create a README.md file in project dir root.
         """
-        if os.path.isdir(self.path):
-            os.chdir(self.path)
+        if os.path.isdir(self.project_path):
+            os.chdir(self.project_path)
             file_content = f""" # {title}
             {description}
             """
-            file_path = os.path.join(self.path, "README.md")
+            file_path = os.path.join(self.project_path, "README.md")
             with open("README.md", 'w+') as file:
                 file.write(file_content)
 
@@ -50,8 +51,8 @@ class GitMate:
         Stating changes to git and then commiting
         returns system response, check while debugging
         """
-        if os.path.isdir(self.path):
-            os.chdir(self.path)
+        if os.path.isdir(self.project_path):
+            os.chdir(self.project_path)
             sys_response = []
             for cmd in commands:
                 try:
@@ -65,8 +66,8 @@ class GitMate:
         """
         Adding Remote link to local repository
         """
-        if os.path.isdir(self.path):
-            os.chdir(self.path)
+        if os.path.isdir(self.project_path):
+            os.chdir(self.project_path)
             sys_log = []
             try:
                 add_remote = os.system(f"git remote add origin {remote_link}")
@@ -79,8 +80,8 @@ class GitMate:
             return 0
 
     def git_push(self):
-        if os.path.isdir(self.path):
-            os.chdir(self.path)
+        if os.path.isdir(self.project_path):
+            os.chdir(self.project_path)
             sys_log = []
             try:
                 push = os.system("git push -u origin main")

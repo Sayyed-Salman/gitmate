@@ -56,7 +56,7 @@ class RestClient:
         url = "https://www.github.com/"+url_path
         self.git_url = url + ".git"
         print(
-            f"STATUS => {self.response}\nREPOSITORY NAME => {name}\nGITHUB URL => {url}")
+            f"[!] status => {self.response}\n[*] Repo name => {name}\n[*] GitHub url => {url}")
         return self.git_url
 
 
