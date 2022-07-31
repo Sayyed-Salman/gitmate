@@ -57,15 +57,6 @@ def add_readme(path, title, description):
         return 0
 
 
-# testing add_readme() func
-"""
-result = add_readme('A:\\Test\\monkey', "Monkey-Code",
-                    "Writing Monkey Code to analyze how monkey brain works")
-print(result)
-test passed 
-"""
-
-
 def stage_git(path, commands: list):
     """
     Stating changes to git and then commiting
@@ -81,15 +72,6 @@ def stage_git(path, commands: list):
             except Exception as e:
                 return (e, sys_response)
         return 0
-
-
-# testing stage_git()
-"""
-result = stage_git('A:\\Test\\monkey', [
-                   "git add .", "git commit -m \"first commit\""])
-print(result)
-test passed
-"""
 
 
 def adding_remote_repository(path, remote_link):

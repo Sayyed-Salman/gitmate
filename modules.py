@@ -87,3 +87,19 @@ class GitMate:
                 sys_log.append(push)
             except Exception as e:
                 return (e, sys_log)
+
+
+# Utility Methods
+
+def check_value(argument):
+    if argument:
+        return True
+
+
+def set_data(key, value):
+    with open("user_data.json", "+r") as file:
+        user_data = json.load(file)
+        user_data[key] = value
+        file.seek(0)
+        json.dump(user_data, file, indent=4)
+        file.truncate()
