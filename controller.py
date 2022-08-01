@@ -1,6 +1,7 @@
 import modules
 from modules import check_value
 from modules import GitMate
+from modules import get_path
 import rest_client
 import argparse
 import namegenerator
@@ -55,7 +56,7 @@ if __name__ == "__main__":
         args.name) else namegenerator.gen(repeatParts=False)
     project_description = args.description if check_value(
         args.description) else "New Project !"
-    project_path = args.path if check_value(args.path) else "./"
+    project_path = args.path if check_value(args.path) else get_path()
 
     git_commands = ["git add .", "git commit -m \"Initial commit 🗳️\""]
 

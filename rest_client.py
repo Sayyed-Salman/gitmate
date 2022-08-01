@@ -35,6 +35,7 @@ class RestClient:
         """
         self.response = requests.post(
             url=self.url, headers=self.head, json=self.data)
+        print(f"[+] Remote repo {self.data['name']} created !")
         return self.response
 
     def error_check(self):
@@ -50,7 +51,16 @@ class RestClient:
         """
         Decorating Response for output
         """
+
         data = self.response.json()
+
+        if data is None:
+            print("[!] Error occoured in request.")
+            exit()
+
+        if self.error_check() != 0:
+            exit()
+
         name = data["name"]
         url_path = data["full_name"]
         url = "https://www.github.com/"+url_path

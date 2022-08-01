@@ -4,7 +4,7 @@ import json
 
 class GitMate:
     """
-    Creating and Linking Git Repository
+    Creating and Linking Git Repository, Main Module.
     """
 
     def __init__(self, path, name):
@@ -28,7 +28,7 @@ class GitMate:
         if os.path.isdir(self.project_path):
             os.chdir(self.project_path)
             system_response = os.system("git init")
-        return system_response
+        # return system_response
 
     def add_readme(self, title, description):
         """
@@ -80,6 +80,9 @@ class GitMate:
             return 0
 
     def git_push(self):
+        """
+        Push local repository to remote repository.
+        """
         if os.path.isdir(self.project_path):
             os.chdir(self.project_path)
             sys_log = []
@@ -93,14 +96,44 @@ class GitMate:
 # Utility Methods
 
 def check_value(argument):
+    """
+    Utility function for GitMate to check parser input
+    """
     if argument:
         return True
 
 
 def set_data(key, value):
+    """
+    Utility function for GitMate to set data in json file take (key, value) as argument file name is hardcoded
+    """
     with open("user_data.json", "+r") as file:
         user_data = json.load(file)
         user_data[key] = value
         file.seek(0)
         json.dump(user_data, file, indent=4)
         file.truncate()
+
+
+def validate_path(path):
+    """
+    Utility funciton for GitMate validates path for input (path) variable
+    """
+    if os.path.isdir(path):
+        return True
+
+
+def get_path():
+    """
+    Utility Function to get valid path from user if parser path is incorrect
+    () -> string.
+    """
+    expression = 0
+    while expression == 0:
+        print("[!] Enter an absolute path to a empty directory")
+        path = input(">")
+        if validate_path(path):
+            expression = 1
+            break
+        print("[!] Invalid path.")
+    return path
